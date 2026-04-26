@@ -95,7 +95,7 @@ class IndexModel:
         
         
         """
-       self.index_returns is a Series of total returns from the index composition. 
+       self.index_returns is a Series of total returns from the index composition (with corresponding dates).
        This dictionary is computed as below: 
        If units are None (first day of time-series), or yesterday was a rebalance date, a new composition must be created. 
        Find the latest (yesterday's) rebalance date: 
@@ -141,7 +141,7 @@ class IndexModel:
 
 
         """
-        self.index_values is a Series containing the index levels, starting from the base level 100.
+        self.index_values is a Series containing the index levels (with corresponding dates), starting from the base level 100.
         """
 
     
