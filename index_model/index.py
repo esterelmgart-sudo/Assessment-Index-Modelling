@@ -12,8 +12,8 @@ class IndexModel:
         self.prices: pd.DataFrame = None 
         self.weights: list[float] = [0.5, 0.25, 0.25]
         
-        self.rebalance_dates: list[pd.Timestamp] = []
-        self.selection_dates: dict[pd.Timestamp, pd.Timestamp] = {}
+        self.rebalance_dates: pd.DatetimeIndex = None
+        self.selection_dates: dict[pd.Timestamp, pd.Timestamp]= {}
         self.constituents: dict[pd.Timestamp, list[str]] = {}
         
         self.index_values: pd.Series = None
@@ -26,7 +26,7 @@ class IndexModel:
     def calc_index_level(self, start_date: dt.date, end_date: dt.date) -> None:
         
         """
-        self.prices denotes extracted prices in a DataFrame. 
+        self.prices denotes prices. Format: DataFrame. 
         """
         
         
@@ -43,13 +43,11 @@ class IndexModel:
         
         
         """
-        self.rebalance_dates corresponds to the date of the first business day of each month. 
-        
-        This date is found by grouping the pricing data by month, and extracting first index value of that month. 
-
-        self.selection_dates creates a dictionary of rebalance dates (first business day of each month), mapped to their corresponding 
-        selection dates which is simply the previous date. 
-        More precisely, the selection date is the previous business day which also corresponds to the last business day of the previous month.  
+        self.rebalance_dates denotes date for the first business day each month. 
+        Computed by grouping the data by month, and locating first index value of that month. 
+        self.selection_dates creates a dictionary for self.rebalance_dates. 
+        First business day of each month is mapped to corresponding selection date.
+        The selection date is the previous business day, corresponding to the last business day of the previous month.  
         """
 
         self.rebalance_dates = (
@@ -66,24 +64,20 @@ class IndexModel:
         for date in self.rebalance_dates:
             prev_date = self.prices.loc[self.prices.index < date].index[-1]
             self.selection_dates[date] = prev_date
+
         
     
         
         
         """ 
-        self.constituents consist of a dictionary mapping each rebalance date to it's constituents. 
-        
-        
-        This dictionary is found by locating the stocks with the highest price per share (per corresponding selection dates), and mapping 
-        these stocks to the respective rebalance date in ascending order to a list.
-        
-        The order of the shares is important to ensure that the stock with the highest price per share gets assigned a weight of 50% while the 
-        stocks with second, and third-highest price per share gets assigned a weight of 25% respectively. 
+        self.constituents is a dictionary, mapping each rebalance date to its constituents. 
+        It is computed by locating the stocks with the highest price per share (during selection date), and mapping 
+        these stocks to the corresponding rebalance date in a list (in ascending order).
+        The ascending order is important to ensure that the weights are allocated correctly. 
 
         NOTE The reason that the selection solely depends on price per share is because all stocks have the same amount of stocks outstanding. 
         This means that market cap can be computed through price per share solely, since: 
-
-        market cap = price per share * amt shares outstanding (same for all stocks)
+        market cap = price per share * amt shares outstanding (same for all stocks).
         """
 
         self.constituents = {}
@@ -94,25 +88,22 @@ class IndexModel:
             top_3 = prices_on_day.sort_values(ascending=False).head(3).index.tolist()
             
             self.constituents[rebalance_date] = top_3
+
         
         
 
         
         
         """
-       self.index_returns consist of a Series of the total returns from the index composition. 
-
-       This dictionary is computed through the following method: 
-       
-       If units are None (first day of time-series) or yesterday was a rebalance date, we must create a new composition. 
+       self.index_returns is a Series of total returns from the index composition. 
+       This dictionary is computed as below: 
+       If units are None (first day of time-series), or yesterday was a rebalance date, a new composition must be created. 
        Find the latest (yesterday's) rebalance date: 
-        Find which list of stocks corresponds to that rebalance date.
-        Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
-        invested in specified stocks, according to the composition)
-
-       Regardless of date: compute total index value and compare with previous date index value to compute index_return. 
-       
-       NOTE !!! Because the new composition becomes effective close on the rebalance day, active_rebalance_date is the consecutive day.
+            Find which list of stocks corresponds to the constituents of the last rebalance date.
+            Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
+            invested in specified stocks, according to the composition)
+       Compute total index value and compare with previous date index value to obtain index_return. 
+       NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after.
         """
         
         
@@ -139,15 +130,17 @@ class IndexModel:
                 )
                 
              index_value_today = (units * self.prices.loc[today, stocks]).sum()
+             
              index_return = (index_value_today / current_index_value) - 1 
              self.index_returns[today] = index_return
+             
              current_index_value = index_value_today
             
         self.index_returns = pd.Series(self.index_returns)
 
 
         """
-        self.index_values contain the calculated index levels (in a Series format), starting from base level 100. 
+        self.index_values is a Series containing the index levels, starting from the base level 100. 
         """
 
     
@@ -155,6 +148,7 @@ class IndexModel:
         self.index_values = (1 + self.index_returns).cumprod() * self.base_level
         self.index_values.loc[pd.Timestamp(start_date)] = self.base_level
         self.index_values = self.index_values.sort_index()
+
         
     
     def export_values(self, file_name: str) -> None:
