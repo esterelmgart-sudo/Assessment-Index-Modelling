@@ -153,4 +153,4 @@ class IndexModel:
         
     
     def export_values(self, file_name: str) -> None:
-        self.index_values.round(2).to_csv(file_name, header=["index level"], index_label=["Date"], mode="w")
+        self.index_values.to_csv(file_name, header=["index level"], index_label=["Date"], mode="w")
