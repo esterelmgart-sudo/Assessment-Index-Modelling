@@ -47,11 +47,7 @@ class IndexModel:
         It is computed by grouping the data by month, and locating first index value of that month. 
         self.selection_dates creates a dictionary for self.rebalance_dates, the first business day of each month is mapped to 
         corresponding selection date. The selection date is the previous business day, corresponding to the last business day of the 
-<<<<<<< HEAD
-        previous month.  
-=======
         previous month.
->>>>>>> b0735a8e80819e7dbffae54c4d73f3e0ab3bb2d9
         """
 
         self.rebalance_dates = (
@@ -107,11 +103,7 @@ class IndexModel:
             Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
             invested in specified stocks, according to the composition)
        Compute total index value and compare with previous date index value to obtain index_return. 
-<<<<<<< HEAD
-       NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
-=======
-       Note: Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
->>>>>>> b0735a8e80819e7dbffae54c4d73f3e0ab3bb2d9
+       Note: Because the new composition becomes effective close on the rebalance day, the new composition is implemented the day after the 
        rebalance date.
         """
         
