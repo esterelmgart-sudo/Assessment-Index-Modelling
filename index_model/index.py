@@ -5,7 +5,7 @@ class IndexModel:
 
     """
     Class representing the index model.
-    The calss stores price data and computes index attributes (such as rebalance dates, selection dates, constituents, returns and index levels)
+    The class stores price data and computes index attributes (such as rebalance dates, selection dates, constituents, returns and index levels)
     over time. 
     """
     def __init__(self) -> None:
