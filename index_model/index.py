@@ -72,10 +72,10 @@ class IndexModel:
         """ 
         self.constituents is a dictionary, mapping each rebalance date to its constituents. 
         It is computed by locating the stocks with the highest price per share (during selection date), and mapping 
-        these stocks to the corresponding rebalance date in a list (in ascending order).
-        The ascending order is important to ensure that the weights are allocated correctly. 
+        these stocks to the corresponding rebalance date in a list (in descending order).
+        The descending order is important to ensure that the weights are allocated correctly. 
 
-        NOTE The reason that the selection solely depends on price per share is because all stocks have the same amount of stocks outstanding. 
+        Note: The reason that the selection solely depends on price per share is because all stocks have the same amount of stocks outstanding. 
         This means that market cap can be computed through price per share solely, since: 
         market cap = price per share * amt shares outstanding (same for all stocks).
         """
@@ -103,7 +103,7 @@ class IndexModel:
             Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
             invested in specified stocks, according to the composition)
        Compute total index value and compare with previous date index value to obtain index_return. 
-       NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
+       Note: Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
        rebalance date.
         """
         
