@@ -26,7 +26,7 @@ class IndexModel:
     def calc_index_level(self, start_date: dt.date, end_date: dt.date) -> None:
         
         """
-        self.prices denotes prices. Format: DataFrame. 
+        self.prices denotes prices and is stored in a DataFrame. 
         """
         
         
@@ -44,10 +44,10 @@ class IndexModel:
         
         """
         self.rebalance_dates denotes date for the first business day each month. 
-        Computed by grouping the data by month, and locating first index value of that month. 
-        self.selection_dates creates a dictionary for self.rebalance_dates. 
-        First business day of each month is mapped to corresponding selection date.
-        The selection date is the previous business day, corresponding to the last business day of the previous month.  
+        It is computed by grouping the data by month, and locating first index value of that month. 
+        self.selection_dates creates a dictionary for self.rebalance_dates, the first business day of each month is mapped to 
+        corresponding selection date. The selection date is the previous business day, corresponding to the last business day of the 
+        previous month.
         """
 
         self.rebalance_dates = (
@@ -103,7 +103,8 @@ class IndexModel:
             Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
             invested in specified stocks, according to the composition)
        Compute total index value and compare with previous date index value to obtain index_return. 
-       NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after.
+       NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
+       rebalance date.
         """
         
         
@@ -140,7 +141,7 @@ class IndexModel:
 
 
         """
-        self.index_values is a Series containing the index levels, starting from the base level 100. 
+        self.index_values is a Series containing the index levels, starting from the base level 100.
         """
 
     
