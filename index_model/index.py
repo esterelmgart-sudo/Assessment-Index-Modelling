@@ -47,7 +47,11 @@ class IndexModel:
         It is computed by grouping the data by month, and locating first index value of that month. 
         self.selection_dates creates a dictionary for self.rebalance_dates, the first business day of each month is mapped to 
         corresponding selection date. The selection date is the previous business day, corresponding to the last business day of the 
+<<<<<<< HEAD
         previous month.  
+=======
+        previous month.
+>>>>>>> b0735a8e80819e7dbffae54c4d73f3e0ab3bb2d9
         """
 
         self.rebalance_dates = (
@@ -72,10 +76,10 @@ class IndexModel:
         """ 
         self.constituents is a dictionary, mapping each rebalance date to its constituents. 
         It is computed by locating the stocks with the highest price per share (during selection date), and mapping 
-        these stocks to the corresponding rebalance date in a list (in ascending order).
-        The ascending order is important to ensure that the weights are allocated correctly. 
+        these stocks to the corresponding rebalance date in a list (in descending order).
+        The descending order is important to ensure that the weights are allocated correctly. 
 
-        NOTE The reason that the selection solely depends on price per share is because all stocks have the same amount of stocks outstanding. 
+        Note: The reason that the selection solely depends on price per share is because all stocks have the same amount of stocks outstanding. 
         This means that market cap can be computed through price per share solely, since: 
         market cap = price per share * amt shares outstanding (same for all stocks).
         """
@@ -103,7 +107,11 @@ class IndexModel:
             Compute units of shares (equivalent of amount of shares that would have been purchased, if the value of the index actually had been 
             invested in specified stocks, according to the composition)
        Compute total index value and compare with previous date index value to obtain index_return. 
+<<<<<<< HEAD
        NOTE !!! Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
+=======
+       Note: Because the new composition becomes effective close on the rebalance day, the new composition is implementd the day after the 
+>>>>>>> b0735a8e80819e7dbffae54c4d73f3e0ab3bb2d9
        rebalance date.
         """
         
@@ -141,7 +149,7 @@ class IndexModel:
 
 
         """
-        self.index_values is a Series containing the index levels, starting from the base level 100. 
+        self.index_values is a Series containing the index levels, starting from the base level 100.
         """
 
     
@@ -153,4 +161,4 @@ class IndexModel:
         
     
     def export_values(self, file_name: str) -> None:
-        self.index_values.to_csv(file_name, header=["index level"], index_label=["Date"], mode="w")
+        self.index_values.round(2).to_csv(file_name, header=["index level"], index_label=["Date"], mode="w")
