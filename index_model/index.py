@@ -96,7 +96,7 @@ class IndexModel:
         
         """
        self.index_returns is a Series of total returns from the index composition (with corresponding dates).
-       This dictionary is computed as below: 
+       It is computed as below: 
        If units are None (first day of time-series), or yesterday was a rebalance date, a new composition must be created. 
        Find the latest (yesterday's) rebalance date: 
             Find which list of stocks corresponds to the constituents of the last rebalance date.
